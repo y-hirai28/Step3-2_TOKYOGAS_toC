@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* カスタムカラー設定 */
+:root {
+  --primary-color: #004098;
+  --background-color: #F5F5F6;
+}
+
+/* カスタムボタンスタイル */
+@layer components {
+  .btn-primary {
+    background-color: #004098;
+    border-color: #004098;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #003578;
+    border-color: #003578;
+  }
+  
+  .btn-primary:focus {
+    background-color: #003578;
+    border-color: #003578;
+  }
+  
+  .btn-primary:active {
+    background-color: #002850;
+    border-color: #002850;
+  }
+  
+  .btn-outline.btn-primary {
+    background-color: transparent;
+    border-color: #004098;
+    color: #004098;
+  }
+  
+  .btn-outline.btn-primary:hover {
+    background-color: #004098;
+    border-color: #004098;
+    color: white;
+  }
+  
+  /* プライマリカラーテキスト */
+  .text-primary {
+    color: #004098;
+  }
+  
+  /* プライマリカラー背景 */
+  .bg-primary {
+    background-color: #004098;
+  }
+  
+  /* カスタム背景色 */
+  .bg-custom {
+    background-color: #F5F5F6;
+  }
+  
+  /* ブランドカラー */
+  .text-blue-800 {
+    color: #004098;
+  }
+  
+  .bg-blue-100 {
+    background-color: #E8F2FF;
+  }
+  
+  /* タブアクティブカラー */
+  .tab-active {
+    background-color: #004098 !important;
+    color: white !important;
+  }
+  
+  /* カスタムタブスタイル */
+  .tabs-custom {
+    background-color: #F9FAFB;
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid #E5E7EB;
+  }
+  
+  .tabs-custom .tab {
+    background-color: transparent;
+    border: none;
+    color: #6B7280;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border-radius: 6px;
+    margin: 0 2px;
+  }
+  
+  .tabs-custom .tab:hover {
+    background-color: #F3F4F6;
+    color: #374151;
+    transform: translateY(-1px);
+  }
+  
+  .tabs-custom .tab-active {
+    background: linear-gradient(135deg, #004098 0%, #0066CC 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(0, 64, 152, 0.3);
+    font-weight: 600;
+  }
+  
+  .tabs-custom .tab-active:hover {
+    background: linear-gradient(135deg, #003578 0%, #0052A3 100%) !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 64, 152, 0.4);
+  }
+}
+
+/* モバイルファーストの追加スタイル */
+@layer utilities {
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* タッチターゲットサイズの最適化 */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* モバイルでのスクロール改善 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ベース背景色 */
+body {
+  background-color: #F5F5F6;
+}
+
+/* フォーカススタイルの改善 */
+@media (hover: none) {
+  .btn:hover {
+    @apply scale-100;
+  }
+}
