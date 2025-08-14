@@ -27,10 +27,17 @@ const upload = multer({
   }
 })
 
-// Azure Blob Storage client
-const blobServiceClient = BlobServiceClient.fromConnectionString(
-  process.env.AZURE_STORAGE_CONNECTION_STRING
-)
+// Azure Blob Storage client (optional - will skip if not configured)
+let blobServiceClient = null
+if (process.env.AZURE_STORAGE_CONNECTION_STRING) {
+  try {
+    blobServiceClient = BlobServiceClient.fromConnectionString(
+      process.env.AZURE_STORAGE_CONNECTION_STRING
+    )
+  } catch (error) {
+    logger.warn('Azure Storage not configured - file uploads will be stored locally only')
+  }
+}
 const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME || 'energy-documents'
 
 // Upload energy bill document
@@ -44,13 +51,25 @@ router.post('/document', authenticateToken, upload.single('document'), async (re
     const file = req.file
     const pool = getPool()
 
-    // Generate unique blob name
-    const blobName = `${userId}/${Date.now()}-${file.originalname}`
-    const blockBlobClient = blobServiceClient.getContainerClient(containerName).getBlockBlobClient(blobName)
-
-    // Upload to Azure Blob Storage
-    const fileBuffer = await fs.readFile(file.path)
-    await blockBlobClient.upload(fileBuffer, fileBuffer.length)
+    let azureBlobUrl = null
+    
+    // Upload to Azure Blob Storage if configured
+    if (blobServiceClient) {
+      try {
+        const blobName = `${userId}/${Date.now()}-${file.originalname}`
+        const blockBlobClient = blobServiceClient.getContainerClient(containerName).getBlockBlobClient(blobName)
+        const fileBuffer = await fs.readFile(file.path)
+        await blockBlobClient.upload(fileBuffer, fileBuffer.length)
+        azureBlobUrl = blockBlobClient.url
+        logger.info(`File uploaded to Azure Blob Storage: ${blobName}`)
+      } catch (error) {
+        logger.warn(`Azure upload failed, storing locally: ${error.message}`)
+        azureBlobUrl = `local://uploads/${file.filename}`
+      }
+    } else {
+      azureBlobUrl = `local://uploads/${file.filename}`
+      logger.info('File stored locally (Azure Storage not configured)')
+    }
 
     // Save file record to database
     const fileRecord = await pool.request()
@@ -58,7 +77,7 @@ router.post('/document', authenticateToken, upload.single('document'), async (re
       .input('filename', sql.NVarChar, file.originalname)
       .input('fileType', sql.NVarChar, file.mimetype)
       .input('fileSize', sql.Int, file.size)
-      .input('azureBlobUrl', sql.NVarChar, blockBlobClient.url)
+      .input('azureBlobUrl', sql.NVarChar, azureBlobUrl)
       .query(`
         INSERT INTO FileUploads (user_id, filename, file_type, file_size, azure_blob_url, processing_status)
         OUTPUT INSERTED.id

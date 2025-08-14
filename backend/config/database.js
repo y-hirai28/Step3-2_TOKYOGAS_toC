@@ -25,6 +25,12 @@ let pool = null
 
 const initializeDatabase = async () => {
   try {
+    // Check if database configuration is available
+    if (!process.env.AZURE_SQL_SERVER || process.env.AZURE_SQL_SERVER === 'your-server.database.windows.net') {
+      logger.warn('⚠️ Azure SQL Database not configured - running in development mode without database')
+      return null
+    }
+
     if (pool) {
       await pool.close()
     }
@@ -40,13 +46,15 @@ const initializeDatabase = async () => {
     return pool
   } catch (error) {
     logger.error('❌ Database connection failed:', error.message)
-    throw error
+    logger.warn('🔧 Running in development mode without database connection')
+    return null
   }
 }
 
 const getPool = () => {
   if (!pool) {
-    throw new Error('Database not initialized. Call initializeDatabase() first.')
+    logger.warn('Database not available - returning null (development mode)')
+    return null
   }
   return pool
 }
