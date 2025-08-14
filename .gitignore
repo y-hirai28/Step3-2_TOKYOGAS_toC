@@ -46,8 +46,14 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Next.js
+.next/
 
 # OS generated files
 .DS_Store
