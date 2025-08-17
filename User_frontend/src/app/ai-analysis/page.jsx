@@ -3,6 +3,16 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import MobileNav from '../components/MobileNav'
+import { 
+  WatsonMLIcon, 
+  AnalyticsIcon, 
+  TrendingUpIcon,
+  EnergyIcon,
+  ConnectIcon,
+  SettingsIcon,
+  NotificationIcon,
+  ChatIcon
+} from '../components/CarbonIcon'
 
 export default function AIAnalysis() {
   const [analysisData, setAnalysisData] = useState({
@@ -20,7 +30,7 @@ export default function AIAnalysis() {
         impact: 'high',
         points: 50,
         difficulty: 'easy',
-        icon: '🌡️'
+        icon: 'temperature'
       },
       {
         id: 2,
@@ -30,7 +40,7 @@ export default function AIAnalysis() {
         impact: 'high',
         points: 100,
         difficulty: 'medium',
-        icon: '💡'
+        icon: 'idea'
       },
       {
         id: 3,
@@ -40,7 +50,7 @@ export default function AIAnalysis() {
         impact: 'medium',
         points: 30,
         difficulty: 'easy',
-        icon: '⚡'
+        icon: 'electricity'
       },
       {
         id: 4,
@@ -50,7 +60,7 @@ export default function AIAnalysis() {
         impact: 'medium',
         points: 40,
         difficulty: 'easy',
-        icon: '💧'
+        icon: 'water'
       }
     ],
     patterns: {
@@ -122,10 +132,10 @@ export default function AIAnalysis() {
 
   const getSentimentIcon = (sentiment) => {
     switch (sentiment) {
-      case 'positive': return '😊'
-      case 'neutral': return '😐'
-      case 'negative': return '😟'
-      default: return '🤖'
+      case 'positive': return 'checkmark'
+      case 'neutral': return 'information'
+      case 'negative': return 'warning'
+      default: return 'watson-machine-learning'
     }
   }
 
@@ -138,12 +148,17 @@ export default function AIAnalysis() {
       <MobileNav />
 
       <div className="container mx-auto px-4 py-4 sm:py-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">🤖 AI分析・コメント</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8 flex items-center gap-3">
+          <WatsonMLIcon size="2em" className="text-corporate" />
+          AI分析・コメント
+        </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
-          <div className="card bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-xl">
+          <div className="card bg-corporate text-white shadow-xl">
             <div className="card-body text-center">
-              <div className="text-5xl mb-4">🎯</div>
+              <div className="mb-4">
+                <AnalyticsIcon size="3em" className="text-white" />
+              </div>
               <h2 className="card-title justify-center text-white text-xl">総合スコア</h2>
               <div className="text-4xl font-bold">{analysisData.overall.score}</div>
               <p className="opacity-90">エネルギー効率</p>
@@ -152,7 +167,10 @@ export default function AIAnalysis() {
 
           <div className="card bg-white shadow-xl">
             <div className="card-body">
-              <h3 className="card-title text-lg">📈 予測削減率</h3>
+              <h3 className="card-title text-lg flex items-center gap-2">
+                <TrendingUpIcon />
+                予測削減率
+              </h3>
               <div className="text-3xl font-bold text-green-600 mb-2">
                 {analysisData.predictions.next_month_reduction}%
               </div>
@@ -166,8 +184,11 @@ export default function AIAnalysis() {
 
           <div className="card bg-white shadow-xl">
             <div className="card-body">
-              <h3 className="card-title text-lg">💰 予測節約額</h3>
-              <div className="text-3xl font-bold text-blue-600 mb-2">
+              <h3 className="card-title text-lg flex items-center gap-2">
+                <EnergyIcon />
+                予測節約額
+              </h3>
+              <div className="text-3xl font-bold text-corporate mb-2">
                 ¥{analysisData.predictions.annual_savings.toLocaleString()}
               </div>
               <p className="text-sm text-gray-600">年間節約予測</p>
@@ -182,14 +203,22 @@ export default function AIAnalysis() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           <div className="card bg-white shadow-xl">
             <div className="card-body">
-              <h2 className="card-title text-2xl mb-6">💡 AI改善提案</h2>
+              <h2 className="card-title text-2xl mb-6 flex items-center gap-3">
+                <ConnectIcon size="1.5em" className="text-corporate" />
+                AI改善提案
+              </h2>
               
               <div className="space-y-4">
                 {analysisData.recommendations.map((rec) => (
                   <div key={rec.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="text-3xl">{rec.icon}</div>
+                        <div>
+                          {rec.icon === 'temperature' && <SettingsIcon size="2em" className="text-orange-500" />}
+                          {rec.icon === 'idea' && <EnergyIcon size="2em" className="text-yellow-500" />}
+                          {rec.icon === 'electricity' && <ConnectIcon size="2em" className="text-corporate" />}
+                          {rec.icon === 'water' && <WatsonMLIcon size="2em" className="text-corporate" />}
+                        </div>
                         <div>
                           <h3 className="font-bold text-lg">{rec.title}</h3>
                           <div className="badge badge-outline">{rec.category}</div>
@@ -225,7 +254,10 @@ export default function AIAnalysis() {
           <div className="space-y-6">
             <div className="card bg-white shadow-xl">
               <div className="card-body">
-                <h3 className="card-title text-xl mb-4">📊 使用パターン分析</h3>
+                <h3 className="card-title text-xl mb-4 flex items-center gap-2">
+                  <AnalyticsIcon />
+                  使用パターン分析
+                </h3>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
@@ -262,7 +294,10 @@ export default function AIAnalysis() {
 
             <div className="card bg-white shadow-xl">
               <div className="card-body">
-                <h3 className="card-title text-xl mb-4">🎯 改善目標</h3>
+                <h3 className="card-title text-xl mb-4 flex items-center gap-2">
+                  <TrendingUpIcon />
+                  改善目標
+                </h3>
                 
                 <div className="space-y-3">
                   <div>
@@ -296,14 +331,22 @@ export default function AIAnalysis() {
 
         <div className="card bg-white shadow-xl mt-6 sm:mt-8">
           <div className="card-body">
-            <h2 className="card-title text-2xl mb-6">💬 AIコメント履歴</h2>
+            <h2 className="card-title text-2xl mb-6 flex items-center gap-3">
+              <ChatIcon size="1.5em" className="text-corporate" />
+              AIコメント履歴
+            </h2>
             
             <div className="space-y-4">
               {aiComments.map((comment) => (
-                <div key={comment.id} className="border-l-4 border-blue-500 pl-4 py-3 bg-blue-50 rounded-r-lg">
+                <div key={comment.id} className="border-l-4 border-corporate pl-4 py-3 bg-corporate-50 rounded-r-lg">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-2xl">{getSentimentIcon(comment.sentiment)}</span>
+                      <span>
+                        {getSentimentIcon(comment.sentiment) === 'checkmark' && <ConnectIcon size="1.5em" className="text-green-500" />}
+                        {getSentimentIcon(comment.sentiment) === 'information' && <NotificationIcon size="1.5em" className="text-corporate" />}
+                        {getSentimentIcon(comment.sentiment) === 'warning' && <SettingsIcon size="1.5em" className="text-yellow-500" />}
+                        {getSentimentIcon(comment.sentiment) === 'watson-machine-learning' && <WatsonMLIcon size="1.5em" className="text-gray-500" />}
+                      </span>
                       <div>
                         <div className="font-bold">{comment.category}</div>
                         <div className="text-sm text-gray-600">{comment.date}</div>

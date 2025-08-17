@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Icon } from '@iconify/react'
 import MobileNav from '../components/MobileNav'
 
 export default function Ranking() {
@@ -20,7 +21,7 @@ export default function Ranking() {
   ])
 
   const [departmentRanking, setDepartmentRanking] = useState([
-    { rank: 1, name: '営業部', members: 25, reduction: 13.4, totalPoints: 12500, color: 'bg-blue-100 text-blue-800' },
+    { rank: 1, name: '営業部', members: 25, reduction: 13.4, totalPoints: 12500, color: 'bg-corporate-100 text-corporate' },
     { rank: 2, name: 'マーケティング部', members: 18, reduction: 11.9, totalPoints: 9800, color: 'bg-green-100 text-green-800' },
     { rank: 3, name: '開発部', members: 32, reduction: 10.7, totalPoints: 15600, color: 'bg-purple-100 text-purple-800' },
     { rank: 4, name: '人事部', members: 12, reduction: 9.5, totalPoints: 6200, color: 'bg-yellow-100 text-yellow-800' },
@@ -30,10 +31,10 @@ export default function Ranking() {
   ])
 
   const achievements = [
-    { id: 1, title: '月間削減王', description: '月間削減率1位を獲得', icon: '👑', date: '2025-01', winner: '田中 太郎' },
-    { id: 2, title: '部門制覇', description: '営業部が部門ランキング1位', icon: '🏆', date: '2025-01', winner: '営業部' },
-    { id: 3, title: '新記録達成', description: '個人削減率15%を突破', icon: '🎯', date: '2025-01', winner: '田中 太郎' },
-    { id: 4, title: 'エコチャンピオン', description: '3ヶ月連続削減率10%以上', icon: '🌱', date: '2024-12', winner: '佐藤 花子' },
+    { id: 1, title: '月間削減王', description: '月間削減率1位を獲得', icon: 'ion:medal', date: '2025-01', winner: '田中 太郎' },
+    { id: 2, title: '部門制覇', description: '営業部が部門ランキング1位', icon: 'ion:trophy', date: '2025-01', winner: '営業部' },
+    { id: 3, title: '新記録達成', description: '個人削減率15%を突破', icon: 'ion:flag', date: '2025-01', winner: '田中 太郎' },
+    { id: 4, title: 'エコチャンピオン', description: '3ヶ月連続削減率10%以上', icon: 'ion:star', date: '2024-12', winner: '佐藤 花子' },
   ]
 
   const getRankBadge = (rank) => {
@@ -44,9 +45,9 @@ export default function Ranking() {
   }
 
   const getRankIcon = (rank) => {
-    if (rank === 1) return '🥇'
-    if (rank === 2) return '🥈'
-    if (rank === 3) return '🥉'
+    if (rank === 1) return <Icon icon="ion:trophy" className="text-4xl text-yellow-500" />
+    if (rank === 2) return <Icon icon="ion:trophy" className="text-4xl text-gray-400" />
+    if (rank === 3) return <Icon icon="ion:trophy" className="text-4xl text-orange-400" />
     return `${rank}位`
   }
 
@@ -70,24 +71,30 @@ export default function Ranking() {
           </div>
         </div>
 
-        <div className="tabs tabs-lifted mb-6 sm:mb-8 overflow-x-auto">
+        <div className="tabs tabs-lifted mb-6 sm:mb-8 overflow-x-auto whitespace-nowrap">
           <button 
-            className={`tab tab-lg ${activeTab === 'individual' ? 'tab-active' : ''}`}
+            className={`tab tab-sm sm:tab-lg flex-shrink-0 ${activeTab === 'individual' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('individual')}
           >
-            👤 個人ランキング
+            <Icon icon="carbon:user" className="inline mr-1 sm:mr-2" /> 
+            <span className="hidden sm:inline">個人ランキング</span>
+            <span className="sm:hidden">個人</span>
           </button>
           <button 
-            className={`tab tab-lg ${activeTab === 'department' ? 'tab-active' : ''}`}
+            className={`tab tab-sm sm:tab-lg flex-shrink-0 ${activeTab === 'department' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('department')}
           >
-            🏢 部門ランキング
+            <Icon icon="carbon:building" className="inline mr-1 sm:mr-2" /> 
+            <span className="hidden sm:inline">部門ランキング</span>
+            <span className="sm:hidden">部門</span>
           </button>
           <button 
-            className={`tab tab-lg ${activeTab === 'achievements' ? 'tab-active' : ''}`}
+            className={`tab tab-sm sm:tab-lg flex-shrink-0 ${activeTab === 'achievements' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('achievements')}
           >
-            🏆 実績・表彰
+            <Icon icon="ion:trophy" className="inline mr-1 sm:mr-2" /> 
+            <span className="hidden sm:inline">実績表彰</span>
+            <span className="sm:hidden">実績</span>
           </button>
         </div>
 
@@ -96,20 +103,20 @@ export default function Ranking() {
             <div className="lg:col-span-2">
               <div className="card bg-white shadow-xl">
                 <div className="card-body">
-                  <h2 className="card-title text-2xl mb-6">👤 個人削減率ランキング</h2>
+                  <h2 className="card-title text-2xl mb-6"><Icon icon="carbon:user" className="inline mr-2" /> 個人削減率ランキング</h2>
                   
                   {individualRanking.slice(0, 3).map((person, index) => (
                     <div key={person.rank} className={`p-4 rounded-lg mb-4 ${
-                      index === 0 ? 'bg-gradient-to-r from-yellow-100 to-yellow-200' :
-                      index === 1 ? 'bg-gradient-to-r from-gray-100 to-gray-200' :
-                      'bg-gradient-to-r from-orange-100 to-orange-200'
+                      index === 0 ? 'bg-yellow-100' :
+                      index === 1 ? 'bg-gray-100' :
+                      'bg-orange-100'
                     }`}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="text-4xl">{getRankIcon(person.rank)}</div>
+                          <div>{getRankIcon(person.rank)}</div>
                           <div className="avatar">
-                            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                              <span className="text-blue-800 font-bold text-lg">{person.avatar}</span>
+                            <div className="w-12 h-12 rounded-full bg-corporate-100 flex items-center justify-center">
+                              <span className="text-corporate font-bold text-lg">{person.avatar}</span>
                             </div>
                           </div>
                           <div>
@@ -135,8 +142,8 @@ export default function Ranking() {
                             {person.rank}位
                           </div>
                           <div className="avatar">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                              <span className="text-blue-800 font-bold">{person.avatar}</span>
+                            <div className="w-10 h-10 rounded-full bg-corporate-100 flex items-center justify-center">
+                              <span className="text-corporate font-bold">{person.avatar}</span>
                             </div>
                           </div>
                           <div>
@@ -156,9 +163,9 @@ export default function Ranking() {
             </div>
 
             <div className="space-y-6">
-              <div className="card bg-gradient-to-r from-green-400 to-blue-500 text-white shadow-xl">
+              <div className="card bg-corporate text-white shadow-xl">
                 <div className="card-body text-center">
-                  <div className="text-4xl mb-2">🏆</div>
+                  <Icon icon="ion:trophy" className="text-4xl mb-2" />
                   <h3 className="card-title justify-center text-white">あなたの順位</h3>
                   <div className="text-3xl font-bold">1位</div>
                   <div className="text-lg opacity-90">削減率: 15.2%</div>
@@ -168,7 +175,7 @@ export default function Ranking() {
 
               <div className="card bg-white shadow-xl">
                 <div className="card-body">
-                  <h3 className="card-title">📊 部門別統計</h3>
+                  <h3 className="card-title"><Icon icon="ion:stats-chart" className="inline mr-2" /> 部門別統計</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span>営業部平均</span>
@@ -180,7 +187,7 @@ export default function Ranking() {
                     </div>
                     <div className="flex justify-between">
                       <span>目標削減率</span>
-                      <span className="font-bold text-blue-600">12.0%</span>
+                      <span className="font-bold text-corporate">12.0%</span>
                     </div>
                   </div>
                 </div>
@@ -188,7 +195,7 @@ export default function Ranking() {
 
               <div className="card bg-white shadow-xl">
                 <div className="card-body">
-                  <h3 className="card-title">🎯 今月の目標</h3>
+                  <h3 className="card-title"><Icon icon="ion:flag" className="inline mr-2" /> 今月の目標</h3>
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
@@ -219,7 +226,7 @@ export default function Ranking() {
         {activeTab === 'department' && (
           <div className="card bg-white shadow-xl">
             <div className="card-body">
-              <h2 className="card-title text-2xl mb-6">🏢 部門別削減率ランキング</h2>
+              <h2 className="card-title text-2xl mb-6"><Icon icon="carbon:building" className="inline mr-2" /> 部門別削減率ランキング</h2>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {departmentRanking.map((dept, index) => (
@@ -228,7 +235,7 @@ export default function Ranking() {
                   }`}>
                     <div className="card-body">
                       <div className="flex items-center justify-between mb-3">
-                        <div className="text-3xl">{getRankIcon(dept.rank)}</div>
+                        <div>{getRankIcon(dept.rank)}</div>
                         <div className={`badge badge-lg ${dept.color}`}>
                           {dept.members}名
                         </div>
@@ -243,7 +250,7 @@ export default function Ranking() {
                         </div>
                         <div className="stat py-2">
                           <div className="stat-title text-xs">総ポイント</div>
-                          <div className="stat-value text-lg text-blue-600">{dept.totalPoints.toLocaleString()}</div>
+                          <div className="stat-value text-lg text-corporate">{dept.totalPoints.toLocaleString()}</div>
                         </div>
                       </div>
                     </div>
@@ -258,16 +265,16 @@ export default function Ranking() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             <div className="card bg-white shadow-xl">
               <div className="card-body">
-                <h2 className="card-title text-2xl mb-6">🏆 最新の実績・表彰</h2>
+                <h2 className="card-title text-2xl mb-6"><Icon icon="ion:trophy" className="inline mr-2" /> 最新の実績表彰</h2>
                 
                 <div className="space-y-4">
                   {achievements.map((achievement) => (
-                    <div key={achievement.id} className="flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg">
-                      <div className="text-4xl">{achievement.icon}</div>
+                    <div key={achievement.id} className="flex items-center gap-4 p-4 bg-corporate-100 rounded-lg">
+                      <Icon icon={achievement.icon} className="text-4xl text-corporate" />
                       <div className="flex-1">
                         <div className="font-bold text-lg">{achievement.title}</div>
                         <div className="text-sm text-gray-600">{achievement.description}</div>
-                        <div className="text-sm text-blue-600 font-medium">受賞者: {achievement.winner}</div>
+                        <div className="text-sm text-corporate font-medium">受賞者: {achievement.winner}</div>
                       </div>
                       <div className="text-right">
                         <div className="badge badge-primary">{achievement.date}</div>
@@ -281,7 +288,7 @@ export default function Ranking() {
             <div className="space-y-6">
               <div className="card bg-white shadow-xl">
                 <div className="card-body">
-                  <h3 className="card-title">📈 月次成長率</h3>
+                  <h3 className="card-title"><Icon icon="ion:trending-up" className="inline mr-2" /> 月次成長率</h3>
                   <div className="h-32 flex items-center justify-center bg-gray-50 rounded-lg">
                     <p className="text-gray-500">成長率グラフ（Chart.js等で実装予定）</p>
                   </div>
@@ -290,30 +297,30 @@ export default function Ranking() {
 
               <div className="card bg-white shadow-xl">
                 <div className="card-body">
-                  <h3 className="card-title">🎖️ 獲得バッジ</h3>
+                  <h3 className="card-title"><Icon icon="ion:medal" className="inline mr-2" /> 獲得バッジ</h3>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                      <div className="text-3xl mb-1">🥇</div>
+                      <Icon icon="ion:trophy" className="text-3xl mb-1 text-yellow-500" />
                       <div className="text-xs font-bold">月間王者</div>
                     </div>
                     <div className="text-center p-3 bg-green-50 rounded-lg">
-                      <div className="text-3xl mb-1">🌱</div>
+                      <Icon icon="carbon:tree" className="text-3xl mb-1 text-green-500" />
                       <div className="text-xs font-bold">エコ達人</div>
                     </div>
-                    <div className="text-center p-3 bg-blue-50 rounded-lg">
-                      <div className="text-3xl mb-1">📈</div>
+                    <div className="text-center p-3 bg-corporate-50 rounded-lg">
+                      <Icon icon="ion:trending-up" className="text-3xl mb-1 text-corporate" />
                       <div className="text-xs font-bold">成長王</div>
                     </div>
                     <div className="text-center p-3 bg-purple-50 rounded-lg">
-                      <div className="text-3xl mb-1">🎯</div>
+                      <Icon icon="ion:flag" className="text-3xl mb-1 text-purple-500" />
                       <div className="text-xs font-bold">目標達成</div>
                     </div>
                     <div className="text-center p-3 bg-red-50 rounded-lg">
-                      <div className="text-3xl mb-1">🔥</div>
+                      <Icon icon="carbon:fire" className="text-3xl mb-1 text-red-500" />
                       <div className="text-xs font-bold">継続王</div>
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg opacity-50">
-                      <div className="text-3xl mb-1">❓</div>
+                      <Icon icon="ion:help-circle" className="text-3xl mb-1 text-gray-400" />
                       <div className="text-xs">未獲得</div>
                     </div>
                   </div>

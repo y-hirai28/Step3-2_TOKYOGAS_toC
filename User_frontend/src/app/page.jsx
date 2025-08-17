@@ -1,11 +1,12 @@
 import Link from 'next/link'
+import { Icon } from '@iconify/react'
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-custom">
-      <div className="navbar bg-white shadow-lg px-4">
+      <div className="navbar bg-corporate shadow-lg px-4">
         <div className="navbar-start">
-          <div className="text-lg sm:text-xl font-bold text-blue-800">Tech0 by scope3</div>
+          <div className="text-lg sm:text-xl font-bold text-white">Tech0 by scope3</div>
         </div>
         <div className="navbar-end">
           <Link href="/login" className="btn btn-primary btn-sm sm:btn-md">ログイン</Link>
@@ -41,7 +42,9 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             <div className="card bg-base-100 shadow-xl">
               <div className="card-body text-center">
-                <div className="text-4xl mb-4">📊</div>
+                <div className="mb-4 flex justify-center">
+                  <Icon icon="ion:stats-chart" className="text-5xl text-corporate" />
+                </div>
                 <h3 className="card-title justify-center">利用量可視化</h3>
                 <p>月次のエネルギー利用量・料金を分かりやすく表示</p>
               </div>
@@ -49,7 +52,9 @@ export default function Home() {
             
             <div className="card bg-base-100 shadow-xl">
               <div className="card-body text-center">
-                <div className="text-4xl mb-4">🏆</div>
+                <div className="mb-4 flex justify-center">
+                  <Icon icon="ion:trophy" className="text-5xl text-yellow-500" />
+                </div>
                 <h3 className="card-title justify-center">Tech0ポイント</h3>
                 <p>省エネ活動でポイント獲得、従業員のモチベーション向上</p>
               </div>
@@ -57,7 +62,9 @@ export default function Home() {
             
             <div className="card bg-base-100 shadow-xl">
               <div className="card-body text-center">
-                <div className="text-4xl mb-4">📈</div>
+                <div className="mb-4 flex justify-center">
+                  <Icon icon="carbon:trending-up" className="text-5xl text-corporate" />
+                </div>
                 <h3 className="card-title justify-center">ランキング</h3>
                 <p>企業内での削減率ランキングで競争意識を醸成</p>
               </div>
@@ -65,7 +72,9 @@ export default function Home() {
             
             <div className="card bg-base-100 shadow-xl">
               <div className="card-body text-center">
-                <div className="text-4xl mb-4">🤖</div>
+                <div className="mb-4 flex justify-center">
+                  <Icon icon="carbon:watson-machine-learning" className="text-5xl text-purple-500" />
+                </div>
                 <h3 className="card-title justify-center">AI分析</h3>
                 <p>AIによる使用パターン分析と改善提案</p>
               </div>
@@ -81,7 +90,7 @@ export default function Home() {
             <div className="card bg-white shadow-xl">
               <div className="card-body">
                 <div className="flex items-center justify-center mb-4">
-                  <div className="text-6xl text-blue-600">🔗</div>
+                  <Icon icon="carbon:connect" className="text-6xl text-corporate" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">シームレスなデータ連携</h3>
                 <p className="text-lg text-gray-600">

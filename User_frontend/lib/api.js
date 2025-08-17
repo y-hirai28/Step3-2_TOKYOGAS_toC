@@ -21,11 +21,25 @@ export const apiRequest = async (endpoint, options = {}) => {
     const response = await fetch(url, config)
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }))
+      const errorText = await response.text()
+      let errorData
+      try {
+        errorData = JSON.parse(errorText)
+      } catch (parseError) {
+        console.warn('Failed to parse error response as JSON:', parseError)
+        errorData = { error: 'Network error' }
+      }
       throw new Error(errorData.error || `HTTP ${response.status}`)
     }
     
-    return await response.json()
+    const responseText = await response.text()
+    try {
+      return JSON.parse(responseText)
+    } catch (parseError) {
+      console.error('Failed to parse response as JSON:', parseError)
+      console.error('Response text:', responseText)
+      throw new Error('Invalid JSON response from server')
+    }
   } catch (error) {
     console.error('API Error:', error)
     throw error

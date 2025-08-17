@@ -1,0 +1,278 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* カスタムカラー設定 */
+:root {
+  --primary-color: #004098;
+  --background-color: #F5F5F6;
+}
+
+/* カスタムボタンスタイル */
+@layer components {
+  .btn-primary {
+    background-color: #004098;
+    border-color: #004098;
+    color: white;
+    transition: background-color 0.2s ease;
+    font-weight: 600;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0052CC;
+    border-color: #0052CC;
+  }
+  
+  .btn-primary:focus {
+    background-color: #0052CC;
+    border-color: #0052CC;
+    box-shadow: 0 0 0 3px rgba(0, 64, 152, 0.2);
+  }
+  
+  .btn-primary:active {
+    background-color: #003578;
+    border-color: #003578;
+  }
+  
+  .btn-outline.btn-primary {
+    background-color: transparent;
+    border: 2px solid #004098;
+    color: #004098;
+    transition: all 0.2s ease;
+    font-weight: 600;
+  }
+  
+  .btn-outline.btn-primary:hover {
+    background-color: #0052CC;
+    border-color: #0052CC;
+    color: white;
+  }
+  
+  /* プライマリカラーテキスト */
+  .text-primary {
+    color: #004098;
+  }
+  
+  /* プライマリカラー背景 */
+  .bg-primary {
+    background-color: #004098;
+  }
+  
+  /* カスタム背景色 */
+  .bg-custom {
+    background-color: #F5F5F6;
+  }
+  
+  /* ブランドカラー */
+  .text-blue-800 {
+    color: #004098;
+    transition: all 0.3s ease;
+  }
+  
+  .text-blue-800:hover {
+    color: #0066CC;
+    text-shadow: 0 2px 4px rgba(0, 64, 152, 0.2);
+  }
+  
+  .bg-blue-100 {
+    background-color: #E8F2FF;
+  }
+  
+  /* リンクスタイル */
+  .link-primary {
+    color: #004098;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+  
+  .link-primary:hover {
+    color: #0066CC;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+  }
+  
+  /* カードホバー効果 */
+  .card {
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* ナビゲーションリンク */
+  .nav-link {
+    transition: color 0.2s ease;
+  }
+  
+  .nav-link:hover {
+    color: #0052CC;
+  }
+  
+  /* タブアクティブカラー */
+  .tab-active {
+    background-color: #004098 !important;
+    color: white !important;
+  }
+  
+  /* カスタムタブスタイル */
+  .tabs-custom {
+    background-color: #F9FAFB;
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid #E5E7EB;
+  }
+  
+  .tabs-custom .tab {
+    background-color: transparent;
+    border: none;
+    color: #6B7280;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    border-radius: 6px;
+    margin: 0 2px;
+  }
+  
+  .tabs-custom .tab:hover {
+    background-color: #F3F4F6;
+    color: #374151;
+  }
+  
+  .tabs-custom .tab-active {
+    background-color: #004098 !important;
+    color: white !important;
+    font-weight: 600;
+  }
+  
+  .tabs-custom .tab-active:hover {
+    background-color: #0052CC !important;
+    color: white !important;
+  }
+  
+  /* インプットフィールド */
+  .input-bordered {
+    transition: border-color 0.2s ease;
+    border: 2px solid #E5E7EB;
+  }
+  
+  .input-bordered:focus {
+    border-color: #004098;
+    box-shadow: 0 0 0 3px rgba(0, 64, 152, 0.1);
+  }
+  
+  .input-bordered:hover {
+    border-color: #9CA3AF;
+  }
+  
+  /* アラート */
+  .alert {
+    transition: all 0.3s ease;
+  }
+  
+  .alert-error {
+    border-left: 4px solid #EF4444;
+    background: linear-gradient(90deg, #FEF2F2 0%, #FECACA 100%);
+  }
+  
+  /* ローディングスピナー */
+  .loading-spinner {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* アイコンボタン */
+  .btn-icon {
+    transition: background-color 0.2s ease;
+    border-radius: 50%;
+    padding: 8px;
+  }
+  
+  .btn-icon:hover {
+    background-color: rgba(0, 64, 152, 0.1);
+  }
+  
+  /* フッターリンク */
+  .footer-link {
+    color: #6B7280;
+    transition: color 0.2s ease;
+  }
+  
+  .footer-link:hover {
+    color: #004098;
+  }
+
+  /* プログレスバースタイル追加 */
+  .progress-primary {
+    background-color: #E5E7EB;
+  }
+  
+  .progress-primary::-webkit-progress-value {
+    background-color: #004098;
+  }
+  
+  .progress-primary::-moz-progress-bar {
+    background-color: #004098;
+  }
+
+  /* コーポレートカラー用ユーティリティクラス */
+  .bg-corporate {
+    background-color: #004098;
+  }
+  
+  .text-corporate {
+    color: #004098;
+  }
+  
+  .border-corporate {
+    border-color: #004098;
+  }
+  
+  .bg-corporate-50 {
+    background-color: rgba(0, 64, 152, 0.05);
+  }
+  
+  .bg-corporate-100 {
+    background-color: rgba(0, 64, 152, 0.1);
+  }
+
+  /* ファイル入力用コーポレートカラー */
+  .file-input-corporate:focus {
+    border-color: #004098;
+    box-shadow: 0 0 0 2px rgba(0, 64, 152, 0.2);
+  }
+}
+
+/* モバイルファーストの追加スタイル */
+@layer utilities {
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* タッチターゲットサイズの最適化 */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* モバイルでのスクロール改善 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ベース背景色 */
+body {
+  background-color: #F5F5F6;
+}
+
+/* フォーカススタイルの改善 */
+@media (hover: none) {
+  .btn:hover {
+    @apply scale-100;
+  }
+}

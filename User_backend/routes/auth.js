@@ -27,52 +27,83 @@ router.post('/login', [
     const { loginType, email, password, customerNumber, companyCode } = req.body
     const pool = getPool()
     let user = null
-    let query = ''
     
-    if (loginType === 'tokyogas') {
-      // 東京ガス連携ログイン
-      if (!customerNumber) {
-        return res.status(400).json({ error: 'Customer number is required' })
+    // Development mode - bypass database authentication
+    if (!pool) {
+      logger.warn('Development mode: Using mock authentication')
+      
+      if (loginType === 'tokyogas') {
+        if (!customerNumber) {
+          return res.status(400).json({ error: 'Customer number is required' })
+        }
+        user = {
+          id: 1,
+          name: '東京ガステストユーザー',
+          email: 'tokyogas@example.com',
+          department: 'エネルギー管理部',
+          points: 1500,
+          tokyogas_customer_number: customerNumber
+        }
+      } else {
+        if (!email || !password || !companyCode) {
+          return res.status(400).json({ error: 'Email, password, and company code are required' })
+        }
+        user = {
+          id: 1,
+          name: 'テストユーザー',
+          email: email,
+          department: '開発部',
+          points: 1200,
+          company_code: companyCode
+        }
       }
-      
-      query = `
-        SELECT id, name, email, department, points, tokyogas_customer_number 
-        FROM Users 
-        WHERE tokyogas_customer_number = @customerNumber
-      `
-      
-      const result = await pool.request()
-        .input('customerNumber', sql.NVarChar, customerNumber)
-        .query(query)
-      
-      user = result.recordset[0]
     } else {
-      // 一般ログイン
-      if (!email || !password || !companyCode) {
-        return res.status(400).json({ error: 'Email, password, and company code are required' })
+      // Production mode - use database authentication
+      let query = ''
+      
+      if (loginType === 'tokyogas') {
+        if (!customerNumber) {
+          return res.status(400).json({ error: 'Customer number is required' })
+        }
+        
+        query = `
+          SELECT id, name, email, department, points, tokyogas_customer_number 
+          FROM Users 
+          WHERE tokyogas_customer_number = @customerNumber
+        `
+        
+        const result = await pool.request()
+          .input('customerNumber', sql.NVarChar, customerNumber)
+          .query(query)
+        
+        user = result.recordset[0]
+      } else {
+        if (!email || !password || !companyCode) {
+          return res.status(400).json({ error: 'Email, password, and company code are required' })
+        }
+        
+        query = `
+          SELECT id, name, email, password_hash, department, points, company_code 
+          FROM Users 
+          WHERE email = @email AND company_code = @companyCode
+        `
+        
+        const result = await pool.request()
+          .input('email', sql.NVarChar, email)
+          .input('companyCode', sql.NVarChar, companyCode)
+          .query(query)
+        
+        const dbUser = result.recordset[0]
+        
+        if (dbUser && await bcrypt.compare(password, dbUser.password_hash)) {
+          user = dbUser
+        }
       }
       
-      query = `
-        SELECT id, name, email, password_hash, department, points, company_code 
-        FROM Users 
-        WHERE email = @email AND company_code = @companyCode
-      `
-      
-      const result = await pool.request()
-        .input('email', sql.NVarChar, email)
-        .input('companyCode', sql.NVarChar, companyCode)
-        .query(query)
-      
-      const dbUser = result.recordset[0]
-      
-      if (dbUser && await bcrypt.compare(password, dbUser.password_hash)) {
-        user = dbUser
+      if (!user) {
+        logger.warn(`Failed login attempt - Type: ${loginType}, Email: ${email}, Customer: ${customerNumber}`)
+        return res.status(401).json({ error: 'Invalid credentials' })
       }
-    }
-    
-    if (!user) {
-      logger.warn(`Failed login attempt - Type: ${loginType}, Email: ${email}, Customer: ${customerNumber}`)
-      return res.status(401).json({ error: 'Invalid credentials' })
     }
     
     // Generate JWT token

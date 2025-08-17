@@ -2,13 +2,20 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Icon } from '@iconify/react'
+import { authAPI, setAuthToken } from '../../../lib/api'
 
 export default function Login() {
+  const router = useRouter()
   const [loginType, setLoginType] = useState('general')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    companyCode: ''
+    companyCode: '',
+    customerNumber: ''
   })
 
   const handleInputChange = (e) => {
@@ -18,10 +25,44 @@ export default function Login() {
     })
   }
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    console.log('Login attempt:', { loginType, ...formData })
-    // TODO: 実際のログイン処理を実装
+    setIsLoading(true)
+    setError('')
+
+    try {
+      // Prepare login credentials based on login type
+      const credentials = loginType === 'tokyogas' 
+        ? {
+            customerNumber: formData.customerNumber,
+            password: formData.password,
+            loginType: 'tokyogas'
+          }
+        : {
+            email: formData.email,
+            password: formData.password,
+            companyCode: formData.companyCode,
+            loginType: 'general'
+          }
+
+      // Call API login
+      const response = await authAPI.login(credentials)
+      
+      // Store auth token
+      if (response.token) {
+        setAuthToken(response.token)
+        
+        // Redirect to dashboard
+        router.push('/dashboard')
+      } else {
+        throw new Error('認証トークンが取得できませんでした')
+      }
+    } catch (err) {
+      setError(err.message || 'ログインに失敗しました')
+      console.error('Login error:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -29,7 +70,7 @@ export default function Login() {
       <div className="card w-full max-w-md bg-white shadow-2xl">
         <div className="card-body">
           <div className="text-center mb-6">
-            <Link href="/" className="text-2xl font-bold text-blue-800 hover:text-blue-600">
+            <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/80">
               Tech0 by scope3
             </Link>
             <p className="text-gray-600 mt-2">企業向けエネルギー管理</p>
@@ -51,11 +92,17 @@ export default function Login() {
             </button>
           </div>
 
+          {error && (
+            <div className="alert alert-error mb-4">
+              <span>{error}</span>
+            </div>
+          )}
+
           <form onSubmit={handleLogin} className="space-y-4">
             {loginType === 'tokyogas' ? (
               <>
                 <div className="mb-4">
-                  <p className="text-center text-blue-800 font-medium">
+                  <p className="text-center text-primary font-medium">
                     東京ガスのお客さま番号でログインできます
                   </p>
                 </div>
@@ -90,8 +137,19 @@ export default function Login() {
                   />
                 </div>
 
-                <button className="btn btn-primary w-full btn-md sm:btn-lg">
-                  🔗 <span className="hidden sm:inline">東京ガスアカウントで</span>ログイン
+                <button 
+                  type="submit" 
+                  className="btn btn-primary w-full btn-md sm:btn-lg"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : (
+                    <>
+                      <Icon icon="carbon:connect" className="text-lg" />
+                      <span className="hidden sm:inline">東京ガスアカウントで</span>ログイン
+                    </>
+                  )}
                 </button>
               </>
             ) : (
@@ -141,8 +199,19 @@ export default function Login() {
                   />
                 </div>
 
-                <button className="btn btn-primary w-full btn-md sm:btn-lg">
-                  ログイン
+                <button 
+                  type="submit" 
+                  className="btn btn-primary w-full btn-md sm:btn-lg"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : (
+                    <>
+                      <Icon icon="carbon:login" className="text-lg" />
+                      ログイン
+                    </>
+                  )}
                 </button>
               </>
             )}
@@ -153,6 +222,7 @@ export default function Login() {
 
               
               <button type="button" className="btn btn-outline w-full btn-md">
+                <Icon icon="carbon:chat" className="text-lg" />
                 LINEでログイン
               </button>
             </div>

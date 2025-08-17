@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import MobileNav from '../components/MobileNav'
+import { Icon } from '@iconify/react'
 
 export default function Upload() {
   const [uploadedFiles, setUploadedFiles] = useState([])
@@ -114,18 +115,23 @@ export default function Upload() {
           <div className="space-y-6">
             <div className="card bg-white shadow-xl">
               <div className="card-body">
-                <h2 className="card-title text-2xl mb-6">📤 ファイルアップロード</h2>
+                <h2 className="card-title text-2xl mb-6">
+                  <Icon icon="carbon:upload" className="text-2xl mr-2" />
+                  ファイルアップロード
+                </h2>
                 
                 <div 
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                    dragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
+                    dragActive ? 'border-corporate bg-corporate-50' : 'border-gray-300'
                   }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
                 >
-                  <div className="text-6xl mb-4">📄</div>
+                  <div className="text-6xl mb-4">
+                    <Icon icon="carbon:document" className="text-6xl text-corporate" />
+                  </div>
                   <div className="text-xl font-bold mb-2">ファイルをドロップするか、クリックして選択</div>
                   <div className="text-gray-600 mb-4">
                     対応形式: PDF, JPG, PNG (最大10MB)
@@ -139,13 +145,13 @@ export default function Upload() {
                   />
                 </div>
 
-                <div className="alert alert-info mt-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
+                <div className="alert border-2 border-corporate bg-transparent mt-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6 text-corporate">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                   <div>
-                    <p className="font-bold">アップロード可能な明細書</p>
-                    <p className="text-sm">ガス・電気・水道の利用明細書をアップロードできます。OCR技術により自動で使用量を読み取り、Tech0ポイントを獲得できます。</p>
+                    <p className="font-bold text-corporate">アップロード可能な明細書</p>
+                    <p className="text-sm text-gray-700">ガス・電気・水道の利用明細書をアップロードできます。OCR技術により自動で使用量を読み取り、Tech0ポイントを獲得できます。</p>
                   </div>
                 </div>
               </div>
@@ -160,8 +166,8 @@ export default function Upload() {
                       <div key={file.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-3">
                           <div className="text-2xl">
-                            {file.status === 'completed' ? '✅' : 
-                             file.status === 'processing' ? '⏳' : '📄'}
+                            {file.status === 'completed' ? <Icon icon="carbon:checkmark-filled" className="text-green-600" /> : 
+                             file.status === 'processing' ? <Icon icon="carbon:in-progress" className="text-yellow-600" /> : <Icon icon="carbon:document" className="text-corporate" />}
                           </div>
                           <div>
                             <div className="font-medium truncate max-w-xs">{file.name}</div>
@@ -176,7 +182,7 @@ export default function Upload() {
                             className="btn btn-ghost btn-sm"
                             onClick={() => removeFile(file.id)}
                           >
-                            ❌
+                            <Icon icon="carbon:close" className="text-red-600" />
                           </button>
                         )}
                       </div>
@@ -200,7 +206,10 @@ export default function Upload() {
           <div className="space-y-6">
             <div className="card bg-white shadow-xl">
               <div className="card-body">
-                <h3 className="card-title">📊 アップロード統計</h3>
+                <h3 className="card-title">
+                  <Icon icon="ion:stats-chart" className="text-lg mr-2" />
+                  アップロード統計
+                </h3>
                 <div className="stats stats-vertical shadow">
                   <div className="stat">
                     <div className="stat-title">今月のアップロード</div>
@@ -216,7 +225,7 @@ export default function Upload() {
                   
                   <div className="stat">
                     <div className="stat-title">処理精度</div>
-                    <div className="stat-value text-blue-600">98%</div>
+                    <div className="stat-value text-corporate">98%</div>
                     <div className="stat-desc">OCR読み取り精度</div>
                   </div>
                 </div>
@@ -225,10 +234,13 @@ export default function Upload() {
 
             <div className="card bg-white shadow-xl">
               <div className="card-body">
-                <h3 className="card-title mb-4">💡 アップロードのコツ</h3>
+                <h3 className="card-title mb-4">
+                  <Icon icon="carbon:light-bulb" className="text-lg mr-2" />
+                  アップロードのコツ
+                </h3>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
-                    <div className="text-2xl">📸</div>
+                    <Icon icon="carbon:camera" className="text-2xl text-corporate" />
                     <div>
                       <div className="font-bold">鮮明な画像で撮影</div>
                       <div className="text-sm text-gray-600">数値部分がはっきり見えるように撮影してください</div>
@@ -236,7 +248,7 @@ export default function Upload() {
                   </div>
                   
                   <div className="flex items-start gap-3">
-                    <div className="text-2xl">📄</div>
+                    <Icon icon="carbon:document-pdf" className="text-2xl text-red-600" />
                     <div>
                       <div className="font-bold">PDFファイルを優先</div>
                       <div className="text-sm text-gray-600">PDF形式の方が読み取り精度が高くなります</div>
@@ -244,7 +256,7 @@ export default function Upload() {
                   </div>
                   
                   <div className="flex items-start gap-3">
-                    <div className="text-2xl">🏆</div>
+                    <Icon icon="ion:trophy" className="text-2xl text-yellow-600" />
                     <div>
                       <div className="font-bold">ポイント獲得</div>
                       <div className="text-sm text-gray-600">正常に処理されると10-30ポイント獲得できます</div>
@@ -258,7 +270,10 @@ export default function Upload() {
 
         <div className="card bg-white shadow-xl mt-6 sm:mt-8">
           <div className="card-body">
-            <h3 className="card-title text-2xl mb-6">📋 アップロード履歴</h3>
+            <h3 className="card-title text-2xl mb-6">
+              <Icon icon="carbon:list" className="text-2xl mr-2" />
+              アップロード履歴
+            </h3>
             
             <div className="overflow-x-auto">
               <table className="table">
@@ -276,7 +291,7 @@ export default function Upload() {
                     <tr key={item.id}>
                       <td>
                         <div className="flex items-center gap-3">
-                          <div className="text-xl">📄</div>
+                          <Icon icon="carbon:document" className="text-xl text-corporate" />
                           <div className="font-medium">{item.filename}</div>
                         </div>
                       </td>
