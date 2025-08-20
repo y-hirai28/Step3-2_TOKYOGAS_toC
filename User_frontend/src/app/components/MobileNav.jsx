@@ -19,7 +19,7 @@ export default function MobileNav() {
 
   return (
     <>
-      <div className="navbar bg-corporate shadow-lg px-4">
+      <div className="navbar bg-corporate shadow-lg px-4 fixed top-0 left-0 right-0 z-50">
         <div className="navbar-start">
           <Link href="/" className="text-lg sm:text-xl font-bold text-white">
             Tech0 by scope3
@@ -67,7 +67,7 @@ export default function MobileNav() {
 
       {/* Mobile Navigation Menu */}
       {isOpen && (
-        <div className="lg:hidden bg-corporate shadow-lg border-t border-white/20">
+        <div className="lg:hidden bg-corporate shadow-lg border-t border-white/20 fixed top-16 left-0 right-0 z-40">
           <div className="px-4 py-2 space-y-1">
             <Link 
               href="/dashboard" 

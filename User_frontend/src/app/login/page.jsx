@@ -15,6 +15,9 @@ export default function Login() {
     email: '',
     password: '',
     companyCode: '',
+    employeeId: '',
+    userName: '',
+    department: '',
     customerNumber: ''
   })
 
@@ -42,6 +45,9 @@ export default function Login() {
             email: formData.email,
             password: formData.password,
             companyCode: formData.companyCode,
+            employeeId: formData.employeeId,
+            userName: formData.userName,
+            department: formData.department,
             loginType: 'general'
           }
 
@@ -171,6 +177,21 @@ export default function Login() {
 
                 <div className="form-control">
                   <label className="label">
+                    <span className="label-text">社員番号</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    name="employeeId"
+                    placeholder="社員番号を入力"
+                    className="input input-bordered" 
+                    value={formData.employeeId}
+                    onChange={handleInputChange}
+                    required 
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label">
                     <span className="label-text">メールアドレス</span>
                   </label>
                   <input 
@@ -179,6 +200,36 @@ export default function Login() {
                     placeholder="メールアドレスを入力"
                     className="input input-bordered" 
                     value={formData.email}
+                    onChange={handleInputChange}
+                    required 
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">お名前</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    name="userName"
+                    placeholder="お名前を入力"
+                    className="input input-bordered" 
+                    value={formData.userName}
+                    onChange={handleInputChange}
+                    required 
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">部署</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    name="department"
+                    placeholder="部署名を入力"
+                    className="input input-bordered" 
+                    value={formData.department}
                     onChange={handleInputChange}
                     required 
                   />

@@ -16,7 +16,10 @@ router.post('/login', [
   body('email').optional().isEmail(),
   body('password').optional().isLength({ min: 6 }),
   body('customerNumber').optional().isLength({ min: 1 }),
-  body('companyCode').optional().isLength({ min: 1 })
+  body('companyCode').optional().isLength({ min: 1 }),
+  body('employeeId').optional().isLength({ min: 1 }),
+  body('userName').optional().isLength({ min: 1 }),
+  body('department').optional().isLength({ min: 1 })
 ], async (req, res) => {
   try {
     const errors = validationResult(req)
@@ -24,7 +27,7 @@ router.post('/login', [
       return res.status(400).json({ errors: errors.array() })
     }
 
-    const { loginType, email, password, customerNumber, companyCode } = req.body
+    const { loginType, email, password, customerNumber, companyCode, employeeId, userName, department } = req.body
     const pool = getPool()
     let user = null
     
@@ -45,16 +48,17 @@ router.post('/login', [
           tokyogas_customer_number: customerNumber
         }
       } else {
-        if (!email || !password || !companyCode) {
-          return res.status(400).json({ error: 'Email, password, and company code are required' })
+        if (!email || !password || !companyCode || !employeeId || !userName || !department) {
+          return res.status(400).json({ error: 'Email, password, company code, employee ID, name, and department are required' })
         }
         user = {
           id: 1,
-          name: 'テストユーザー',
+          name: userName,
           email: email,
-          department: '開発部',
+          department: department,
           points: 1200,
-          company_code: companyCode
+          company_code: companyCode,
+          employee_id: employeeId
         }
       }
     } else {
@@ -78,19 +82,20 @@ router.post('/login', [
         
         user = result.recordset[0]
       } else {
-        if (!email || !password || !companyCode) {
-          return res.status(400).json({ error: 'Email, password, and company code are required' })
+        if (!email || !password || !companyCode || !employeeId || !userName || !department) {
+          return res.status(400).json({ error: 'Email, password, company code, employee ID, name, and department are required' })
         }
         
         query = `
-          SELECT id, name, email, password_hash, department, points, company_code 
+          SELECT id, name, email, password_hash, department, points, company_code, employee_id 
           FROM Users 
-          WHERE email = @email AND company_code = @companyCode
+          WHERE email = @email AND company_code = @companyCode AND employee_id = @employeeId
         `
         
         const result = await pool.request()
           .input('email', sql.NVarChar, email)
           .input('companyCode', sql.NVarChar, companyCode)
+          .input('employeeId', sql.NVarChar, employeeId)
           .query(query)
         
         const dbUser = result.recordset[0]
@@ -140,11 +145,15 @@ router.post('/login', [
 
 // Register endpoint
 router.post('/register', [
-  body('name').isLength({ min: 1 }).trim(),
-  body('email').isEmail().normalizeEmail(),
+  body('registerType').isIn(['general', 'tokyogas']),
+  body('userName').isLength({ min: 1 }).trim(),
   body('password').isLength({ min: 6 }),
-  body('companyCode').isLength({ min: 1 }).trim(),
-  body('department').isLength({ min: 1 }).trim()
+  body('email').optional().isEmail().normalizeEmail(),
+  body('companyCode').optional().isLength({ min: 1 }).trim(),
+  body('employeeId').optional().isLength({ min: 1 }).trim(),
+  body('department').optional().trim(),
+  body('position').optional().trim(),
+  body('customerNumber').optional().isLength({ min: 1 }).trim()
 ], async (req, res) => {
   try {
     const errors = validationResult(req)
@@ -152,13 +161,88 @@ router.post('/register', [
       return res.status(400).json({ errors: errors.array() })
     }
 
-    const { name, email, password, companyCode, department, tokyogasCustomerNumber } = req.body
+    const { 
+      registerType, 
+      userName, 
+      email, 
+      password, 
+      companyCode, 
+      employeeId, 
+      department, 
+      position, 
+      customerNumber 
+    } = req.body
+    
     const pool = getPool()
     
-    // Check if user already exists
-    const existingUser = await pool.request()
-      .input('email', sql.NVarChar, email)
-      .query('SELECT id FROM Users WHERE email = @email')
+    // Development mode - bypass database registration
+    if (!pool) {
+      logger.warn('Development mode: Using mock registration')
+      
+      const newUser = {
+        id: Date.now(), // Use timestamp as mock ID
+        name: userName,
+        email: email || `${customerNumber}@tokyogas.com`,
+        department: department || 'テスト部署',
+        points: 0,
+        company_code: companyCode,
+        employee_id: employeeId,
+        tokyogas_customer_number: customerNumber
+      }
+      
+      // Generate JWT token
+      const token = jwt.sign(
+        { 
+          userId: newUser.id, 
+          email: newUser.email,
+          name: newUser.name,
+          department: newUser.department 
+        },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      )
+      
+      logger.info(`Mock registration successful: ${userName}`)
+      
+      return res.status(201).json({
+        success: true,
+        token,
+        user: {
+          id: newUser.id,
+          name: newUser.name,
+          email: newUser.email,
+          department: newUser.department,
+          points: newUser.points
+        }
+      })
+    }
+    
+    // Production mode - use database registration
+    let existingUserQuery = ''
+    let existingUser = null
+    
+    if (registerType === 'tokyogas') {
+      if (!customerNumber || !email || !companyCode || !employeeId) {
+        return res.status(400).json({ error: 'Customer number, email, company code, and employee ID are required for Tokyo Gas registration' })
+      }
+      
+      // Check if customer number already exists
+      existingUserQuery = 'SELECT id FROM Users WHERE tokyogas_customer_number = @customerNumber OR email = @email'
+      existingUser = await pool.request()
+        .input('customerNumber', sql.NVarChar, customerNumber)
+        .input('email', sql.NVarChar, email)
+        .query(existingUserQuery)
+    } else {
+      if (!email || !companyCode || !employeeId) {
+        return res.status(400).json({ error: 'Email, company code, and employee ID are required for general registration' })
+      }
+      
+      // Check if email already exists
+      existingUserQuery = 'SELECT id FROM Users WHERE email = @email'
+      existingUser = await pool.request()
+        .input('email', sql.NVarChar, email)
+        .query(existingUserQuery)
+    }
     
     if (existingUser.recordset.length > 0) {
       return res.status(400).json({ error: 'User already exists' })
@@ -169,19 +253,41 @@ router.post('/register', [
     const hashedPassword = await bcrypt.hash(password, saltRounds)
     
     // Insert new user
-    const result = await pool.request()
-      .input('name', sql.NVarChar, name)
-      .input('email', sql.NVarChar, email)
+    let insertQuery = ''
+    let request = pool.request()
+      .input('userName', sql.NVarChar, userName)
       .input('passwordHash', sql.NVarChar, hashedPassword)
-      .input('companyCode', sql.NVarChar, companyCode)
-      .input('department', sql.NVarChar, department)
-      .input('tokyogasCustomerNumber', sql.NVarChar, tokyogasCustomerNumber || null)
-      .query(`
-        INSERT INTO Users (name, email, password_hash, company_code, department, tokyogas_customer_number)
-        OUTPUT INSERTED.id, INSERTED.name, INSERTED.email, INSERTED.department, INSERTED.points
-        VALUES (@name, @email, @passwordHash, @companyCode, @department, @tokyogasCustomerNumber)
-      `)
     
+    if (registerType === 'tokyogas') {
+      request = request
+        .input('customerNumber', sql.NVarChar, customerNumber)
+        .input('email', sql.NVarChar, email)
+        .input('companyCode', sql.NVarChar, companyCode)
+        .input('employeeId', sql.NVarChar, employeeId)
+        .input('department', sql.NVarChar, department || '')
+        .input('position', sql.NVarChar, position || '')
+      
+      insertQuery = `
+        INSERT INTO Users (name, email, password_hash, tokyogas_customer_number, company_code, employee_id, department, position)
+        OUTPUT INSERTED.id, INSERTED.name, INSERTED.email, INSERTED.department, INSERTED.points
+        VALUES (@userName, @email, @passwordHash, @customerNumber, @companyCode, @employeeId, @department, @position)
+      `
+    } else {
+      request = request
+        .input('email', sql.NVarChar, email)
+        .input('companyCode', sql.NVarChar, companyCode)
+        .input('employeeId', sql.NVarChar, employeeId)
+        .input('department', sql.NVarChar, department || '')
+        .input('position', sql.NVarChar, position || '')
+      
+      insertQuery = `
+        INSERT INTO Users (name, email, password_hash, company_code, employee_id, department, position)
+        OUTPUT INSERTED.id, INSERTED.name, INSERTED.email, INSERTED.department, INSERTED.points
+        VALUES (@userName, @email, @passwordHash, @companyCode, @employeeId, @department, @position)
+      `
+    }
+    
+    const result = await request.query(insertQuery)
     const newUser = result.recordset[0]
     
     // Generate JWT token
@@ -196,7 +302,7 @@ router.post('/register', [
       { expiresIn: '7d' }
     )
     
-    logger.info(`New user registered: ${newUser.name} (${newUser.email})`)
+    logger.info(`New user registered: ${newUser.name} (${newUser.email}) - Type: ${registerType}`)
     
     res.status(201).json({
       success: true,

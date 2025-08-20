@@ -66,7 +66,7 @@ export default function Points() {
   }
 
   return (
-    <div className="min-h-screen bg-custom">
+    <div className="min-h-screen bg-custom pt-16">
       <MobileNav />
 
       <div className="container mx-auto px-4 py-4 sm:py-8">

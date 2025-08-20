@@ -63,7 +63,7 @@ export default function Home() {
             <div className="card bg-base-100 shadow-xl">
               <div className="card-body text-center">
                 <div className="mb-4 flex justify-center">
-                  <Icon icon="carbon:trending-up" className="text-5xl text-corporate" />
+                  <Icon icon="ion:podium" className="text-5xl text-green-600" />
                 </div>
                 <h3 className="card-title justify-center">ランキング</h3>
                 <p>企業内での削減率ランキングで競争意識を醸成</p>
@@ -83,7 +83,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-green-50 py-8 sm:py-12 lg:py-16">
+      <div className="bg-corporate-50 py-8 sm:py-12 lg:py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">東京ガスとの連携</h2>
           <div className="max-w-2xl mx-auto">
